@@ -46,7 +46,9 @@ Create a `.env.local` file in the root directory:
 
 ```env
 # MongoDB Connection (MongoDB Atlas)
-MONGODB_URI=mongodb+srv://zainalis914_db_user:QREaOMRFWfE9khR3@react-dialer.qzddudg.mongodb.net/?appName=react-dialer
+# ⚠️ SECURITY WARNING: Never commit your actual MongoDB credentials to version control!
+# Replace with your own MongoDB Atlas connection string
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name?appName=app-name
 
 # NextAuth Configuration
 NEXTAUTH_URL=http://localhost:3000

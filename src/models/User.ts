@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, type Document, type Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 export interface IUser extends Document {
@@ -45,7 +45,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters"],
-      select: false, // Don't return password by default
+      select: false,
     },
     extensionId: {
       type: String,
@@ -66,23 +66,18 @@ const UserSchema = new Schema<IUser>(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 
-// Hash password before saving
 UserSchema.pre("save", async function () {
-  // Only hash the password if it has been modified (or is new)
   if (!this.isModified("password")) {
     return;
   }
-
-  // Hash password with cost of 12
   const hashedPassword = await bcrypt.hash(this.password, 12);
   this.password = hashedPassword;
 });
 
-// Prevent re-compilation during development
 const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
