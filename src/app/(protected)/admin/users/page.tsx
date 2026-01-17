@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ interface User {
   extensionId?: string;
   host?: string;
   port?: number;
+  secret?: string;
   createdAt: string;
 }
 
@@ -38,6 +40,7 @@ export default function AdminUsersPage() {
   const queryClient = useQueryClient();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,7 +65,7 @@ export default function AdminUsersPage() {
 
   // Create user mutation
   const createUserMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data: Omit<typeof formData, "port"> & { port?: number }) => {
       const res = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -78,12 +81,22 @@ export default function AdminUsersPage() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       setIsCreateDialogOpen(false);
       resetForm();
+      toast.success("User created successfully");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to create user");
     },
   });
 
   // Update user mutation
   const updateUserMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<typeof formData> }) => {
+    mutationFn: async ({ 
+      id, 
+      data 
+    }: { 
+      id: string; 
+      data: Partial<Omit<typeof formData, "port"> & { port?: number }> 
+    }) => {
       const res = await fetch(`/api/users/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -99,12 +112,17 @@ export default function AdminUsersPage() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       setEditingUser(null);
       resetForm();
+      toast.success("User updated successfully");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update user");
     },
   });
 
   // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (id: string) => {
+      setDeletingUserId(id);
       const res = await fetch(`/api/users/${id}`, {
         method: "DELETE",
       });
@@ -116,6 +134,12 @@ export default function AdminUsersPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User deleted successfully");
+      setDeletingUserId(null);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete user");
+      setDeletingUserId(null);
     },
   });
 
@@ -144,13 +168,13 @@ export default function AdminUsersPage() {
       extensionId: user.extensionId || "",
       host: user.host || "",
       port: user.port?.toString() || "",
-      secret: "",
+      secret: user.secret || "",
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const submitData = {
+    const submitData: Omit<typeof formData, "port"> & { port?: number } = {
       ...formData,
       port: formData.port ? parseInt(formData.port) : undefined,
     };
@@ -159,7 +183,7 @@ export default function AdminUsersPage() {
       updateUserMutation.mutate({ id: editingUser._id, data: submitData });
     } else {
       if (!formData.password) {
-        alert("Password is required for new users");
+        toast.error("Password is required for new users");
         return;
       }
       createUserMutation.mutate(submitData);
@@ -243,8 +267,12 @@ export default function AdminUsersPage() {
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">
-                                Delete
+                              <Button 
+                                variant="destructive" 
+                                size="sm"
+                                disabled={deletingUserId === user._id}
+                              >
+                                {deletingUserId === user._id ? "Deleting..." : "Delete"}
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
@@ -256,12 +284,15 @@ export default function AdminUsersPage() {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel disabled={deletingUserId === user._id}>
+                                  Cancel
+                                </AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => deleteUserMutation.mutate(user._id)}
+                                  disabled={deletingUserId === user._id}
                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
-                                  Delete
+                                  {deletingUserId === user._id ? "Deleting..." : "Delete"}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -394,7 +425,8 @@ export default function AdminUsersPage() {
                     <Label htmlFor="secret">Secret</Label>
                     <Input
                       id="secret"
-                      type="password"
+                      type="text"
+                      placeholder="Asterisk numeric identifier"
                       value={formData.secret}
                       onChange={(e) =>
                         setFormData({ ...formData, secret: e.target.value })

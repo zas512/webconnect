@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
 import { NextAuthSessionProvider } from "@/providers/session-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { HotToaster } from "@/components/toaster";
 
 const notoSans = Noto_Sans({ variable: "--font-sans" });
 
@@ -39,7 +40,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextAuthSessionProvider>
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              {children}
+              <HotToaster />
+            </QueryProvider>
           </NextAuthSessionProvider>
         </ThemeProvider>
       </body>

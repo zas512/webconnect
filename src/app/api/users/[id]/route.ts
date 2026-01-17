@@ -6,8 +6,8 @@ import User from "@/models/User";
 
 // GET single user (admin only)
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,7 +18,8 @@ export async function GET(
 
     await connectDB();
 
-    const user = await User.findById(params.id).select("-password");
+    const { id } = await params;
+    const user = await User.findById(id).select("-password");
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -37,7 +38,7 @@ export async function GET(
 // PATCH update user (admin only)
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -51,7 +52,8 @@ export async function PATCH(
 
     await connectDB();
 
-    const user = await User.findById(params.id);
+    const { id } = await params;
+    const user = await User.findById(id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -72,7 +74,7 @@ export async function PATCH(
 
     await user.save();
 
-    const updatedUser = await User.findById(params.id).select("-password");
+    const updatedUser = await User.findById(id).select("-password");
 
     return NextResponse.json(
       {
@@ -92,8 +94,8 @@ export async function PATCH(
 
 // DELETE user (admin only)
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -104,7 +106,8 @@ export async function DELETE(
 
     await connectDB();
 
-    const user = await User.findById(params.id);
+    const { id } = await params;
+    const user = await User.findById(id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -118,7 +121,7 @@ export async function DELETE(
       );
     }
 
-    await User.findByIdAndDelete(params.id);
+    await User.findByIdAndDelete(id);
 
     return NextResponse.json(
       { message: "User deleted successfully" },

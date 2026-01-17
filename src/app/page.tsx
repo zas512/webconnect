@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/20">
       {/* Navigation */}
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -92,8 +97,8 @@ export default function LandingPage() {
               <CardHeader>
                 <CardTitle>Call Recording</CardTitle>
                 <CardDescription>
-                  Automatic call recording and storage for quality assurance
-                  and compliance
+                  Automatic call recording and storage for quality assurance and
+                  compliance
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -101,8 +106,7 @@ export default function LandingPage() {
               <CardHeader>
                 <CardTitle>Integration Ready</CardTitle>
                 <CardDescription>
-                  Seamless integration with your existing CRM and business
-                  tools
+                  Seamless integration with your existing CRM and business tools
                 </CardDescription>
               </CardHeader>
             </Card>

@@ -3,10 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -31,12 +38,16 @@ export default function RegisterPage() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      const errorMessage = "Passwords do not match";
+      setError(errorMessage);
+      toast.error(errorMessage);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      const errorMessage = "Password must be at least 6 characters";
+      setError(errorMessage);
+      toast.error(errorMessage);
       return;
     }
 
@@ -58,21 +69,26 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registration failed");
+        const errorMessage = data.error || "Registration failed";
+        setError(errorMessage);
+        toast.error(errorMessage);
         return;
       }
 
+      toast.success("Account created successfully! Redirecting to login...");
       // Redirect to login after successful registration
       router.push("/login?registered=true");
-    } catch (err) {
-      setError("An error occurred. Please try again.");
+    } catch (_err) {
+      const errorMessage = "An error occurred. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-background to-muted/20 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -81,7 +97,9 @@ export default function RegisterPage() {
             </div>
             <span className="text-2xl font-semibold">Voice Dialer</span>
           </div>
-          <CardTitle className="text-2xl text-center">Create an account</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            Create an account
+          </CardTitle>
           <CardDescription className="text-center">
             Enter your information to get started
           </CardDescription>
