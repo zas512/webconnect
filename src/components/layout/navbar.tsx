@@ -35,7 +35,7 @@ export function Navbar() {
           </Link>
           {session && (
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/dashboard">
+              <Link href="/dialer">
                 <Button variant="ghost">Dialer</Button>
               </Link>
               {session.user.role === "admin" && (
@@ -43,6 +43,9 @@ export function Navbar() {
                   <Button variant="ghost">Users</Button>
                 </Link>
               )}
+              <Link href="/dashboard">
+                <Button variant="ghost">Dashboard</Button>
+              </Link>
             </div>
           )}
         </div>
@@ -50,26 +53,37 @@ export function Navbar() {
           <ThemeSwitcher />
           {session ? (
             <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
-                  {session.user.name?.[0]?.toUpperCase() || session.user.email[0].toUpperCase()}
-                </div>
-                <span className="hidden sm:inline">{session.user.name || session.user.email}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">{session.user.name || "User"}</p>
-                  <p className="text-xs text-muted-foreground">{session.user.email}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{session.user.role}</p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                    {session.user.name?.[0]?.toUpperCase() ||
+                      session.user.email[0].toUpperCase()}
+                  </div>
+                  <span className="hidden sm:inline">
+                    {session.user.name || session.user.email}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">
+                      {session.user.name || "User"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {session.user.email}
+                    </p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {session.user.role}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <div className="flex items-center gap-4">
               <Link href="/login">

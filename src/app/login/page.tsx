@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -13,10 +13,10 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -39,7 +39,7 @@ export default function LoginPage() {
       const result = await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: false
       });
 
       if (result?.error) {
@@ -63,13 +63,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-background to-muted/20 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary font-bold text-lg text-primary-foreground">
               V
             </div>
             <span className="text-2xl font-semibold">Voice Dialer</span>
           </div>
-          <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
+          <CardTitle className="text-center text-2xl">Welcome back</CardTitle>
           <CardDescription className="text-center">
             Sign in to your account to continue
           </CardDescription>
@@ -77,7 +77,7 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
+              <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
                 {error}
               </div>
             )}
@@ -85,11 +85,10 @@ export default function LoginPage() {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                type="email"
+                type="text"
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 disabled={loading}
               />
             </div>
@@ -101,7 +100,6 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 disabled={loading}
               />
             </div>
@@ -110,7 +108,7 @@ export default function LoginPage() {
             </Button>
           </form>
           <div className="mt-4 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/register" className="text-primary hover:underline">
               Sign up
             </Link>
@@ -118,5 +116,32 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-background to-muted/20 p-4">
+      <Card className="w-full max-w-md animate-pulse">
+        <CardHeader className="space-y-4">
+          <div className="mx-auto h-10 w-10 rounded-lg bg-muted" />
+          <div className="mx-auto h-8 w-48 rounded-md bg-muted" />
+          <div className="mx-auto h-4 w-64 rounded-md bg-muted" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="h-16 rounded-md bg-muted" />
+          <div className="h-16 rounded-md bg-muted" />
+          <div className="h-10 rounded-md bg-muted" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginForm />
+    </Suspense>
   );
 }
