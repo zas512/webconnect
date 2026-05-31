@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
 import { NextAuthSessionProvider } from "@/providers/session-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
 import { HotToaster } from "@/components/toaster";
 
 const notoSans = Noto_Sans({ variable: "--font-sans" });
@@ -20,7 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Adaptive Voice Dialer - Call Center Solution",
-  description: "Professional call center solution with advanced dialer functionality",
+  description:
+    "Professional call center solution with advanced dialer functionality",
 };
 
 export default function RootLayout({
@@ -31,21 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={notoSans.variable} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextAuthSessionProvider>
-            <QueryProvider>
-              {children}
-              <HotToaster />
-            </QueryProvider>
-          </NextAuthSessionProvider>
-        </ThemeProvider>
+        <NextAuthSessionProvider>
+          <QueryProvider>
+            {children}
+            <HotToaster />
+          </QueryProvider>
+        </NextAuthSessionProvider>
       </body>
     </html>
   );

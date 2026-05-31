@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,10 +28,14 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              V
-            </div>
-            <span className="text-xl font-semibold">Voice Dialer</span>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={40}
+              height={40}
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold"
+            />
+            <span className="text-xl font-semibold">Adaptive Voice Dialer</span>
           </Link>
           {session && (
             <div className="hidden md:flex items-center gap-4">

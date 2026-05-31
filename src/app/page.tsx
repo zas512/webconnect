@@ -6,18 +6,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/20">
       {/* Navigation */}
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              V
-            </div>
-            <span className="text-xl font-semibold">Voice Dialer</span>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={40}
+              height={40}
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold"
+            />
+            <span className="text-xl font-semibold">Adaptive Voice Dialer</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login">
@@ -38,7 +43,7 @@ export default function LandingPage() {
             <span className="text-primary"> Solution</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-            Advanced voice dialer with intelligent call management, real-time
+            Adaptive voice dialer with intelligent call management, real-time
             analytics, and seamless integration for your call center operations.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
@@ -121,33 +126,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t bg-muted/50">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
-                V
-              </div>
-              <span className="text-sm text-muted-foreground">
-                © 2024 Voice Dialer. All rights reserved.
-              </span>
-            </div>
-            <div className="flex gap-6 text-sm text-muted-foreground">
-              <Link href="#" className="hover:text-foreground">
-                Privacy
-              </Link>
-              <Link href="#" className="hover:text-foreground">
-                Terms
-              </Link>
-              <Link href="#" className="hover:text-foreground">
-                Support
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
